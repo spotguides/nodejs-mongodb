@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  db:
+    image: bitnami/mongodb
+    restart: always
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ['CMD', 'mongo', '--eval', '{ ping: 1 }']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    environment:
+      - MONGODB_USERNAME=username
+      - MONGODB_PASSWORD=password
+      - MONGODB_DATABASE=spotguide-nodejs-mongodb

@@ -1,0 +1,36 @@
+{{- if gt (len .Values.application.ingress.hosts) 0 }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "fullname" . }}-application"
+  annotations:
+{{ toYaml .Values.application.ingress.annotations | indent 4 }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+    version: {{ .Chart.Version | replace "+" "_" }}
+    app: "{{ .Chart.Name }}-application"
+spec:
+{{- if gt (len .Values.application.ingress.tls) 0 }}
+  tls:
+  {{- range .Values.application.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range $host := .Values.application.ingress.hosts }}
+  {{- $url := splitList "/" $host }}
+    - host: {{ first $url }}
+      http:
+        paths:
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: "{{ printf "%s-application" (include "fullname" $) }}"
+              servicePort: http
+  {{- end}}
+{{- end }}

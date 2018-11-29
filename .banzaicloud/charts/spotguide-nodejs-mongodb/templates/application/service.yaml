@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "fullname" . }}-application"
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+    version: {{ .Chart.Version | replace "+" "_" }}
+    app: "{{ .Chart.Name }}-application"
+spec:
+  type: {{ .Values.application.service.type }}
+  ports:
+  - port: {{ .Values.application.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    release: {{ .Release.Name }}
+    app: "{{ .Chart.Name }}-application"

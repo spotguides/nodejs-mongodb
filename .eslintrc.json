@@ -1,0 +1,17 @@
+{
+  "plugins": ["prettier", "import"],
+  "extends": ["airbnb-base", "plugin:import/errors", "plugin:import/warnings", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "script"
+  },
+  "env": {
+    "es6": true,
+    "jest": true
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-underscore-dangle": "off",
+    "no-console": "off"
+  }
+}

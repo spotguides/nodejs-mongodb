@@ -1,0 +1,29 @@
+Congratulations, your Node.js application has been deployed to Kubernetes!
+
+{{ if gt (len .Values.application.ingress.hosts) 0 }}
+The application can be accessed on the following host(s) on port {{ .Values.application.service.port }}:
+{{ range .Values.application.ingress.hosts }}
+- [{{ . }}](http://{{ . }})
+{{- end }}
+{{- else }}
+The application can be accessed on localhost by using the following command:
+
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ template "fullname" . }}-application {{ .Values.application.service.targetPort }}:{{ .Values.application.service.port }}
+{{- end }}
+
+_It might take a few minutes to be available._
+
+{{- if .Values.banzaicloud.cluster.id }}
+
+Every time you make changes to the [source code](https://github.com/{{ include "repo-user" . }}/{{ include "repo-name" . }}) and update the `master` branch, the CI/CD pipeline will be triggered to test, validate and update the deployment of your application.
+
+- [CI/CD]({{ .Values.banzaicloud.organization.name }}/cicd/{{ include "repo-name" . }})
+- [Cluster]({{ .Values.banzaicloud.organization.name }}/cluster/{{ .Values.banzaicloud.cluster.id }}/details)
+- [Secrets]({{ .Values.banzaicloud.organization.name }}/secret?filter={{ include "repo-tag" . }})
+
+Monitor your application with Grafana:
+
+- [Grafana]({{ .Values.banzaicloud.organization.name }}/deployment?cluster={{ .Values.banzaicloud.cluster.name }}&releaseName=monitor)
+- [User secret]({{ .Values.banzaicloud.organization.name }}/secret?name=cluster-{{ .Values.banzaicloud.cluster.id }}-grafana)
+
+{{- end }}

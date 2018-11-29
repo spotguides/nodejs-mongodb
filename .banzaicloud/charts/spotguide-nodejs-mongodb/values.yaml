@@ -1,0 +1,77 @@
+# available when running the deployment in Pipeline CI
+banzaicloud:
+  tags: []
+  organization:
+    name:
+  cluster:
+    id:
+    name:
+    cloud:
+    distribution:
+    location:
+
+monitor:
+  enabled: false
+
+ingress:
+  enabled: false
+
+application:
+  deployment:
+    image:
+      repository: banzaicloud/spotguide-nodejs-mongodb
+      tag: latest
+      pullPolicy: Always
+    replicaCount: 1
+    maxUnavailable: 0
+    maxSurge: 1
+    revisionHistoryLimit: 10
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+    ## Pod Security Context
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    ##
+    securityContext:
+      enabled: true
+      fsGroup: 1001
+      runAsUser: 1001
+    serviceAccountName:
+    podAnnotations:
+    livenessProbe:
+      enabled: true
+      path: /healthy
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    readinessProbe:
+      enabled: true
+      path: /ready
+      initialDelaySeconds: 20
+      periodSeconds: 10
+    env: []
+    envSecrets: []
+    envConfigMaps: []
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+  ingress:
+    tls: []
+    hosts: []
+    annotations: {}
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+
+mongodb:
+  enabled: true
+  mongodbUsername:
+  mongodbDatabase:
+  existingSecret:

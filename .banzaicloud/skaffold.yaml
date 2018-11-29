@@ -1,0 +1,32 @@
+# Skaffold definition (https://github.com/GoogleContainerTools/skaffold)
+apiVersion: skaffold/v1alpha5
+kind: Config
+build:
+  # tagPolicy determines how skaffold is going to tag your images.
+  # The policy can be `gitCommit`, `sha256` or `envTemplate`.
+  tagPolicy:
+    # Tag the image with the git commit of your current repository.
+    sha256: {}
+  # artifacts is a list of the actual images you're going to be building
+  # you can include as many as you want here.
+  artifacts:
+    # The name of the image to be built.
+    - image: spotguide-nodejs-mongodb
+      # The path to your dockerfile context.
+      context: ../
+# The deploy section has all the information needed to deploy. Along with build:
+# it is a required section.
+deploy:
+  helm:
+    # helm releases to deploy.
+    releases:
+      - name: spotguide-nodejs-mongodb
+        namespace: default
+        chartPath: charts/spotguide-nodejs-mongodb
+        valuesFiles:
+          - helm-skaffold-values.yaml
+        values:
+          application.deployment.image: spotguide-nodejs-mongodb
+        # wait: true
+        imageStrategy:
+          helm: {}

@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "fullname" . }}-application"
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+    version: {{ .Chart.Version | replace "+" "_" }}
+    app: "{{ .Chart.Name }}-application"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}-application"
+{{- if .Values.application.autoscaling.enabled }}
+  replicas: {{ .Values.application.autoscaling.minReplicas }}
+{{- else }}
+  replicas: {{ .Values.application.deployment.replicaCount }}
+{{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.application.deployment.maxUnavailable }}
+      maxSurge: {{ .Values.application.deployment.maxSurge }}
+  revisionHistoryLimit: {{ .Values.application.deployment.revisionHistoryLimit }}
+  template:
+    metadata:
+    {{- if .Values.application.deployment.podAnnotations }}
+      annotations:
+{{ toYaml .Values.application.deployment.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: "{{ .Chart.Name }}-application"
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.application.deployment.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.application.deployment.securityContext.fsGroup }}
+        runAsUser: {{ .Values.application.deployment.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.application.deployment.serviceAccountName }}
+      serviceAccountName: {{ .Values.application.deployment.serviceAccountName }}
+      {{- end }}
+      containers:
+      - name: "{{ .Chart.Name }}"
+        image: "{{ .Values.application.deployment.image.repository }}:{{ .Values.application.deployment.image.tag }}"
+        {{- if .Values.application.deployment.command }}
+        command: {{ .Values.application.deployment.command }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.application.deployment.image.pullPolicy }}
+        env:
+          - name: PORT
+            value: {{ .Values.application.service.targetPort | quote }}
+          - name: MONGODB_HOST
+            value: {{ include "call-nested" (list . "mongodb" "mongodb.fullname") }}
+          {{- if and .Values.mongodb.existingSecret (not .Values.mongodb.mongodbUsername) }}
+          - name: MONGODB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.mongodb.existingSecret }}
+                key: mongodb-username
+          {{- else }}
+          - name: MONGODB_USERNAME
+            value: {{ default "" .Values.mongodb.mongodbUsername | quote }}
+          {{- end }}
+          {{- if and .Values.mongodb.usePassword .Values.mongodb.mongodbDatabase }}
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.mongodb.existingSecret }}{{ .Values.mongodb.existingSecret }}{{- else }}{{ include "call-nested" (list . "mongodb" "mongodb.fullname") }}{{- end }}
+                key: mongodb-password
+          {{- end }}
+          - name: MONGODB_DATABASE
+            value: {{ default "" .Values.mongodb.mongodbDatabase | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IMAGE
+            value: "{{ .Values.application.deployment.image.repository }}:{{ .Values.application.deployment.image.tag }}"
+        {{- range .Values.application.deployment.envSecrets }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .secret.name }}
+                key: {{ .secret.key }}
+        {{- end }}
+        {{- range .Values.application.deployment.envConfigMaps }}
+          - name: {{ .name }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .configMap.name }}
+                key: {{ .configMap.key }}
+        {{- end }}
+        {{- range .Values.application.deployment.env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+        {{- end }}
+        {{- if .Values.application.deployment.resources }}
+        resources:
+{{ toYaml .Values.application.deployment.resources | indent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.application.service.targetPort }}
+          name: http
+        {{- if .Values.application.deployment.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.application.deployment.livenessProbe.path }}
+            port: http
+          initialDelaySeconds: {{ .Values.application.deployment.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.application.deployment.livenessProbe.periodSeconds }}
+        {{- end }}
+        {{- if .Values.application.deployment.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.application.deployment.readinessProbe.path }}
+            port: http
+          initialDelaySeconds: {{ .Values.application.deployment.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.application.deployment.readinessProbe.periodSeconds }}
+          {{- end }}

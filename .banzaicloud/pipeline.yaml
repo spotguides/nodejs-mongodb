@@ -1,0 +1,112 @@
+pipeline:
+  create_cluster:
+    image: banzaicloud/ci-pipeline-client:0.6
+    action: EnsureCluster
+
+  test:
+    image: node:10-slim
+    commands:
+      - npm ci
+      - npm test
+
+  build_image:
+    image: plugins/docker
+    dockerfile: Dockerfile
+    repo: '{{ .DRONE_REPO }}'
+    tags: '{{ trunc 7 .DRONE_COMMIT_SHA }}'
+    secretFrom:
+      DOCKER_USERNAME:
+        # name:
+        keyRef: username
+      DOCKER_PASSWORD:
+        # name:
+        keyRef: password
+
+  package_application:
+    when:
+      branch:
+        include: [master]
+    image: lachlanevenson/k8s-helm:latest
+    commands:
+      - helm init -c
+      - helm repo add banzaicloud-stable http://kubernetes-charts.banzaicloud.com/branch/master
+      - helm package ./.banzaicloud/charts/spotguide-nodejs-mongodb
+
+  install_mongodb_user_secret:
+    when:
+      branch:
+        include: [master]
+    image: banzaicloud/ci-pipeline-client:0.6
+    action: InstallSecret
+    clusterSecret:
+      # sourceSecretName:
+      name: '{{ .DRONE_REPO_NAME }}-mongodb'
+      namespace: default
+      merge: true
+      spec:
+        - name: mongodb-username
+          source: username
+        - name: mongodb-password
+          source: password
+
+  install_mongodb_root_secret:
+    when:
+      branch:
+        include: [master]
+    image: banzaicloud/ci-pipeline-client:0.6
+    action: InstallSecret
+    clusterSecret:
+      # sourceSecretName:
+      name: '{{ .DRONE_REPO_NAME }}-mongodb'
+      namespace: default
+      merge: true
+      spec:
+        - name: mongodb-root-password
+          source: password
+
+  install_mongodb_replica_set_key_secret:
+    when:
+      branch:
+        include: [master]
+    image: banzaicloud/ci-pipeline-client:0.6
+    action: InstallSecret
+    clusterSecret:
+      # sourceSecretName:
+      name: '{{ .DRONE_REPO_NAME }}-mongodb'
+      namespace: default
+      merge: true
+      spec:
+        - name: mongodb-replica-set-key
+          source: password
+
+  deploy_application:
+    when:
+      branch:
+        include: [master]
+    image: banzaicloud/ci-pipeline-client:0.6
+    action: EnsureDeployment
+    deployment:
+      name: './spotguide-nodejs-mongodb-1.0.0.tgz'
+      reuseValues: true
+      releaseName: '{{ .DRONE_REPO_NAME }}'
+      values:
+        application:
+          deployment:
+            image:
+              repository: '{{ .DRONE_REPO }}'
+              tag: '{{ trunc 7 .DRONE_COMMIT_SHA }}'
+              pullPolicy: Always
+          ingress:
+            annotations:
+              kubernetes.io/ingress.class: traefik
+              traefik.ingress.kubernetes.io/redirect-regex: ^http://(.*)
+              traefik.ingress.kubernetes.io/redirect-replacement: https://$1
+              traefik.ingress.kubernetes.io/redirect-permanent: "true"
+            hosts:
+              - 'app-{{.DRONE_REPO_NAME}}.{{.CLUSTER_NAME}}.{{.ORG_NAME}}.{{.DOMAIN_NAME}}'
+        mongodb:
+          metrics:
+            enabled: true
+          existingSecret: '{{ .DRONE_REPO_NAME }}-mongodb'
+          # mongodbDatabase:
+          # mongodbUsername:

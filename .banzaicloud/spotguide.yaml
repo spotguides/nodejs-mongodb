@@ -1,0 +1,171 @@
+apiVersion: v1
+name: 'Node.js with MongoDB database'
+description: 'Spotguide for Node.js applications with MongoDB database'
+tags: ['Node.js', 'MongoDB', 'application']
+resources:
+  sumCpu: 2
+  sumMem: 3
+  filters: []
+  sameSize: false
+  onDemandPct: 0
+  minNodes: 1
+  maxNodes: 3
+questions:
+  - type: secret
+    dataType: password
+    name: docker-hub
+    group: Docker Hub (image repository)
+    required:
+      input: true
+      username: true
+      password: true
+    tags:
+      - app:docker
+    targets:
+      - build_image.secretFrom.DOCKER_USERNAME.name
+      - build_image.secretFrom.DOCKER_PASSWORD.name
+  - type: secret
+    dataType: password
+    name: mongodb
+    label: User secret
+    group: MongoDB
+    order: 1
+    required:
+      username: true
+    default:
+      username: username
+    tags:
+      - app:mongodb
+    targets:
+      - install_mongodb_user_secret.clusterSecret.sourceSecretName
+  - type: pipeline
+    dataType: string
+    label: MongoDB database
+    default: node-application
+    group: MongoDB
+    required: true
+    order: 2
+    targets:
+      - deploy_application.deployment.values.mongodb.mongodbDatabase
+  - type: pipeline
+    key: mongodb_root_password
+    group: MongoDB
+    dataType: boolean
+    label: Customize MongoDB root user
+    default: false
+    order: 3
+  - type: secret
+    dataType: password
+    name: mongodb-root
+    label: Root secret
+    group: MongoDB
+    order: 4
+    required: true
+    default:
+      username: root
+    disabled:
+      username: true
+    tags:
+      - app:mongodb
+    targets:
+      - install_mongodb_root_secret.clusterSecret.sourceSecretName
+    showIf:
+      properties:
+        mongodb_root_password:
+          const: true
+  - type: pipeline
+    key: mongodb_replicaset
+    group: MongoDB
+    dataType: boolean
+    label: Enable MongoDB replica set
+    default: true
+    order: 5
+    targets:
+      - deploy_application.deployment.values.mongodb.replicaSet.enabled
+  - type: secret
+    dataType: password
+    label: Replica set key secret
+    name: mongodb-replicaset-key
+    group: MongoDB
+    order: 6
+    default:
+      username: key
+    hidden:
+      username: true
+    disabled:
+      username: true
+    tags:
+      - app:mongodb
+    targets:
+      - install_mongodb_replica_set_key_secret.clusterSecret.sourceSecretName
+    showIf:
+      properties:
+        mongodb_replicaset:
+          const: true
+  - type: pipeline
+    key: application_resources
+    group: Resources
+    dataType: boolean
+    label: Customize application resources
+    default: false
+    order: 1
+  - type: pipeline
+    dataType: string
+    label: Memory request
+    default: 128Mi
+    group: Resources
+    pattern: ^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)?$
+    description: Minimum amount of memory the Node.js container needs
+    required: true
+    order: 2
+    targets:
+      - deploy_application.deployment.values.application.deployment.resources.requests.memory
+    showIf:
+      properties:
+        application_resources:
+          const: true
+  - type: pipeline
+    dataType: string
+    label: Memory limit
+    default: 512Mi
+    group: Resources
+    pattern: ^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)?$
+    description: Maximum amount of memory the Node.js container can use
+    required: true
+    order: 3
+    targets:
+      - deploy_application.deployment.values.application.deployment.resources.limits.memory
+    showIf:
+      properties:
+        application_resources:
+          const: true
+  - type: pipeline
+    dataType: string
+    label: CPU request
+    default: 250m
+    group: Resources
+    pattern: ^\d+(\.?\d+|m)?$
+    description: Minimum amount of CPU the Node.js container needs
+    required: true
+    order: 4
+    targets:
+      - deploy_application.deployment.values.application.deployment.resources.requests.cpu
+    showIf:
+      properties:
+        application_resources:
+          const: true
+  - type: pipeline
+    dataType: string
+    label: CPU limit
+    default: 500m
+    group: Resources
+    pattern: ^\d+m$
+    description: Maximum amount of CPU the Node.js container can use
+    required: true
+    order: 5
+    targets:
+      - deploy_application.deployment.values.application.deployment.resources.limits.cpu
+    showIf:
+      properties:
+        application_resources:
+          const: true

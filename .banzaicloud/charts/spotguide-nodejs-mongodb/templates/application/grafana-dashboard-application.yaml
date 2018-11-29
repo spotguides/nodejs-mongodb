@@ -1,0 +1,15 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-grafana-dashboard-application
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+    version: {{ .Chart.Version | replace "+" "_" }}
+    app: "{{ .Chart.Name }}-application"
+    pipeline_grafana_dashboard: "1"
+data:
+  application.json: |-2
+{{ .Files.Get "grafana-dashboards/application.json"| indent 4 }}
