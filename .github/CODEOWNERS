@@ -1,0 +1,8 @@
+# Each line is a file pattern followed by one or more owners.
+# https://help.github.com/articles/about-codeowners/
+
+# These owners will be the default owners for everything in the repo.
+*               @tothandras
+
+# Order is important. Only these owners will be requested to review.
+.banzaicloud/*  @tothandras @bonifaido
