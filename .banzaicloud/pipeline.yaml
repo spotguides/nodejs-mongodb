@@ -90,6 +90,7 @@ pipeline:
       reuseValues: true
       releaseName: '{{ .CICD_REPO_NAME }}'
       wait: true
+      timeout: 900
       values:
         application:
           deployment:
