@@ -20,9 +20,8 @@ monitor:
 ingress:
   enabled: true
 mongodb:
-  # mongodbUsername: user
-  # mongodbPassword: pass
-  existingSecret: szekret
+  mongodbUsername: user
+  mongodbPassword: pass
   mongodbDatabase: application
   metrics:
     enabled: true

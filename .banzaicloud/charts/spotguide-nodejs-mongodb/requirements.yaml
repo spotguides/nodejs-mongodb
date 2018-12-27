@@ -1,7 +1,7 @@
 dependencies:
 - name: pipeline-cluster-monitor
   repository: http://kubernetes-charts.banzaicloud.com/branch/master
-  version: '>=0.1.10'
+  version: '>=0.1.17'
   alias: monitor
   condition: monitor.enabled
 - name: pipeline-cluster-ingress

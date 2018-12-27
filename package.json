@@ -13,21 +13,21 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@banzaicloud/service-tools": "1.2.6",
+    "@banzaicloud/service-tools": "1.2.7",
     "bson": "4.0.1",
     "joi": "14.3.0",
     "koa": "2.6.2",
     "koa-bodyparser": "4.2.1",
     "koa-compose": "4.1.0",
     "koa-router": "7.4.0",
-    "mongoose": "5.4.0",
-    "prom-client": "11.2.0",
+    "mongoose": "5.4.1",
+    "prom-client": "11.2.1",
     "semver": "5.6.0",
     "stoppable": "1.1.0"
   },
   "devDependencies": {
     "dotenv": "6.2.0",
-    "eslint": "5.10.0",
+    "eslint": "5.11.1",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-config-prettier": "3.3.0",
     "eslint-plugin-import": "2.14.0",
