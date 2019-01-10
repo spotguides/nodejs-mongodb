@@ -159,7 +159,7 @@ questions:
     label: CPU limit
     default: 500m
     group: Resources
-    pattern: ^\d+m$
+    pattern: ^\d+(\.?\d+|m)?$
     description: Maximum amount of CPU the Node.js container can use
     required: true
     order: 5
