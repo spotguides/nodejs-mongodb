@@ -2,7 +2,7 @@
 
 const http = require('http')
 const Koa = require('koa')
-const { makeRequest } = require('@banzaicloud/service-tools').helper
+const { makeRequest } = require('@banzaicloud/service-tools/dist/helper')
 const User = require('../../../models/User')
 const { getAll: handler } = require('./')
 

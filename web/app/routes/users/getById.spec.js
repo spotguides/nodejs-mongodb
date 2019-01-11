@@ -5,7 +5,7 @@ const Koa = require('koa')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
 const { ObjectId } = require('bson')
-const { makeRequest } = require('@banzaicloud/service-tools').helper
+const { makeRequest } = require('@banzaicloud/service-tools/dist/helper')
 const User = require('../../../models/User')
 const { getById: handler } = require('./')
 

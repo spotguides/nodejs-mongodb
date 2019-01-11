@@ -4,7 +4,7 @@ const http = require('http')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const { ObjectId } = require('bson')
-const { makeRequest } = require('@banzaicloud/service-tools').helper
+const { makeRequest } = require('@banzaicloud/service-tools/dist/helper')
 const User = require('../../../models/User')
 const { create: handler } = require('./')
 
