@@ -109,6 +109,6 @@ pipeline:
         mongodb:
           metrics:
             enabled: true
+          usePassword: true
           existingSecret: '{{ .CICD_REPO_NAME }}-mongodb'
           # mongodbDatabase:
-          # mongodbUsername:

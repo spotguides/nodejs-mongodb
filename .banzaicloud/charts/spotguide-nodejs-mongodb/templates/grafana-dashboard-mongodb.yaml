@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-application-dashboard
+  name: {{ template "fullname" . }}-mongodb-dashboard
   labels:
     app.kubernetes.io/name: {{ include "name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/part-of: {{ .Chart.Name }}
     app.kubernetes.io/version: {{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: application
+    app.kubernetes.io/component: mongodb
     pipeline_grafana_dashboard: "1"
 data:
-  application.json: |-2
-{{ .Files.Get "grafana-dashboards/application.json"| indent 4 }}
+  mongodb.json: |-2
+{{ .Files.Get "grafana-dashboards/mongodb.json"| indent 4 }}

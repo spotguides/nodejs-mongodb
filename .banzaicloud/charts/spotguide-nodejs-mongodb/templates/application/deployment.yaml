@@ -1,17 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "fullname" . }}-application"
+  name: {{ template "fullname" . }}-application
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}
-    version: {{ .Chart.Version | replace "+" "_" }}
-    app: "{{ .Chart.Name }}-application"
+    app.kubernetes.io/name: {{ include "name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    app.kubernetes.io/version: {{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: application
 spec:
   selector:
     matchLabels:
-      app: "{{ .Chart.Name }}-application"
+      app.kubernetes.io/name: {{ include "name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/part-of: {{ .Chart.Name }}
+      app.kubernetes.io/component: application
 {{- if .Values.application.autoscaling.enabled }}
   replicas: {{ .Values.application.autoscaling.minReplicas }}
 {{- else }}
@@ -30,8 +34,10 @@ spec:
 {{ toYaml .Values.application.deployment.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: "{{ .Chart.Name }}-application"
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/name: {{ include "name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+        app.kubernetes.io/component: application
     spec:
       {{- if .Values.application.deployment.securityContext.enabled }}
       securityContext:

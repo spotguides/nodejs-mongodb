@@ -12,6 +12,6 @@ dependencies:
 - name: mongodb
   # repository: '@stable'
   repository: "file://../mongodb"
-  version: 4.9.0
+  version: 5.1.0
   alias: mongodb
   condition: mongodb.enabled

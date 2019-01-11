@@ -22,6 +22,7 @@ ingress:
 mongodb:
   mongodbUsername: user
   mongodbPassword: pass
+  usePassword: true
   mongodbDatabase: application
   metrics:
     enabled: true

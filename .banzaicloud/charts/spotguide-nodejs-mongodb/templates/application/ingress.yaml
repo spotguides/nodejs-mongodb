@@ -2,15 +2,16 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ template "fullname" . }}-application"
+  name: {{ template "fullname" . }}-application
   annotations:
 {{ toYaml .Values.application.ingress.annotations | indent 4 }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}
-    version: {{ .Chart.Version | replace "+" "_" }}
-    app: "{{ .Chart.Name }}-application"
+    app.kubernetes.io/name: {{ include "name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    app.kubernetes.io/version: {{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: application
 spec:
 {{- if gt (len .Values.application.ingress.tls) 0 }}
   tls:
