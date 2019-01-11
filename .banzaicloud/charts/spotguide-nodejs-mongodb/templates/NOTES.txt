@@ -23,7 +23,7 @@ Every time you make changes to the [source code](https://github.com/{{ include "
 
 Monitor your application with Grafana:
 
-- [Grafana]({{ .Values.banzaicloud.organization.name }}/deployment?cluster={{ .Values.banzaicloud.cluster.name }}&releaseName=monitor)
+- [Grafana]({{ .Values.banzaicloud.organization.name }}/deployment?cluster={{ .Values.banzaicloud.cluster.name }}&name=monitor)
 - [User secret]({{ .Values.banzaicloud.organization.name }}/secret?name=cluster-{{ .Values.banzaicloud.cluster.id }}-grafana)
 
 {{- end }}
