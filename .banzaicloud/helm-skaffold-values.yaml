@@ -22,12 +22,13 @@ ingress:
 mongodb:
   mongodbUsername: user
   mongodbPassword: pass
+  mongodbRootPassword: rootpass
   usePassword: true
   mongodbDatabase: application
   metrics:
     enabled: true
   replicaSet:
-    enabled: true
+    enabled: false
 application:
   ingress:
     annotations:

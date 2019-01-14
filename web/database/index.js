@@ -4,15 +4,12 @@ const mongoose = require('mongoose')
 const config = require('./config')
 
 mongoose
-  .connect(
-    config.uri,
-    {
-      promiseLibrary: global.Promise,
-      bufferCommands: false,
-      useNewUrlParser: true,
-      useCreateIndex: true,
-    }
-  )
+  .connect(config.uri, {
+    promiseLibrary: global.Promise,
+    bufferCommands: false,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  })
   .then(() => {
     console.log('connected to MongoDB')
   })

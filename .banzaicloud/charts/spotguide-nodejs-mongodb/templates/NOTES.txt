@@ -1,14 +1,15 @@
 Congratulations, your Node.js application has been deployed to Kubernetes!
 
-{{ if gt (len .Values.application.ingress.hosts) 0 }}
-The application can be accessed on the following host(s) on port {{ .Values.application.service.port }}:
-{{ range .Values.application.ingress.hosts }}
+{{ if gt (len .Values.ingress.hosts) 0 }}
+The application can be accessed on the following host(s) on port {{ .Values.service.port }}:
+{{ range .Values.ingress.hosts }}
 - [{{ . }}](http://{{ . }})
 {{- end }}
 {{- else }}
 The application can be accessed on localhost by using the following command:
-
-  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ template "fullname" . }}-application {{ .Values.application.service.targetPort }}:{{ .Values.application.service.port }}
+```
+kubectl -n {{ .Release.Namespace }} port-forward svc/{{ template "fullname" . }}-application {{ .Values.service.targetPort }}:{{ .Values.service.port }}
+```
 {{- end }}
 
 _It might take a few minutes to be available._

@@ -24,7 +24,15 @@ router.get('/debug/fail', fail.get)
 router.get('/debug/slow', slow.get)
 
 apiRouter.get('/', async (ctx) => {
-  ctx.body = apiRouter.stack.map(({ path, methods }) => ({ path, methods }))
+  ctx.body = apiRouter.stack.reduce(
+    (paths, { path, methods }) =>
+      Object.assign(paths, {
+        [path]: {
+          methods: [...(paths[path] ? paths[path].methods : []), ...methods],
+        },
+      }),
+    {}
+  )
 })
 apiRouter.post('/users', users.create)
 apiRouter.get('/users', users.getAll)

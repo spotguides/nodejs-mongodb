@@ -3,13 +3,13 @@ name: 'Node.js with MongoDB database'
 description: 'Spotguide for Node.js applications with MongoDB database'
 tags: ['Node.js', 'MongoDB', 'application']
 resources:
-  sumCpu: 2
-  sumMem: 3
+  sumCpu: 3
+  sumMem: 4
   filters: []
   sameSize: false
   onDemandPct: 100
-  minNodes: 1
-  maxNodes: 3
+  minNodes: 2
+  maxNodes: 4
 questions:
   - type: secret
     dataType: password
@@ -119,7 +119,7 @@ questions:
     required: true
     order: 2
     targets:
-      - deploy_application.deployment.values.application.deployment.resources.requests.memory
+      - deploy_application.deployment.Values.deployment.resources.requests.memory
     showIf:
       properties:
         application_resources:
@@ -134,7 +134,7 @@ questions:
     required: true
     order: 3
     targets:
-      - deploy_application.deployment.values.application.deployment.resources.limits.memory
+      - deploy_application.deployment.Values.deployment.resources.limits.memory
     showIf:
       properties:
         application_resources:
@@ -149,7 +149,7 @@ questions:
     required: true
     order: 4
     targets:
-      - deploy_application.deployment.values.application.deployment.resources.requests.cpu
+      - deploy_application.deployment.Values.deployment.resources.requests.cpu
     showIf:
       properties:
         application_resources:
@@ -164,7 +164,7 @@ questions:
     required: true
     order: 5
     targets:
-      - deploy_application.deployment.values.application.deployment.resources.limits.cpu
+      - deploy_application.deployment.Values.deployment.resources.limits.cpu
     showIf:
       properties:
         application_resources:

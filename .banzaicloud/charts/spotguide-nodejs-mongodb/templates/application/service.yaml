@@ -2,19 +2,17 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "fullname" . }}-application
-  annotations:
-    prometheus.io/scrape: 'true'
   labels:
     app.kubernetes.io/name: {{ include "name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    app.kubernetes.io/version: {{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: application
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
-  type: {{ .Values.application.service.type }}
+  type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.application.service.port }}
+  - port: {{ .Values.service.port }}
     targetPort: http
     protocol: TCP
     name: http

@@ -5,58 +5,58 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ include "name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/part-of: {{ .Chart.Name }}
-    app.kubernetes.io/version: {{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: application
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/part-of: {{ .Chart.Name }}
       app.kubernetes.io/component: application
-{{- if .Values.application.autoscaling.enabled }}
-  replicas: {{ .Values.application.autoscaling.minReplicas }}
+{{- if .Values.autoscaling.enabled }}
+  replicas: {{ .Values.autoscaling.minReplicas }}
 {{- else }}
-  replicas: {{ .Values.application.deployment.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
 {{- end }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: {{ .Values.application.deployment.maxUnavailable }}
-      maxSurge: {{ .Values.application.deployment.maxSurge }}
-  revisionHistoryLimit: {{ .Values.application.deployment.revisionHistoryLimit }}
+      maxUnavailable: {{ .Values.deployment.maxUnavailable }}
+      maxSurge: {{ .Values.deployment.maxSurge }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
   template:
     metadata:
-    {{- if .Values.application.deployment.podAnnotations }}
       annotations:
-{{ toYaml .Values.application.deployment.podAnnotations | indent 8 }}
-    {{- end }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.service.targetPort | quote }}
+      {{- if .Values.deployment.podAnnotations }}
+{{ toYaml .Values.deployment.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/part-of: {{ .Chart.Name }}
         app.kubernetes.io/component: application
     spec:
-      {{- if .Values.application.deployment.securityContext.enabled }}
+      {{- if .Values.deployment.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.application.deployment.securityContext.fsGroup }}
-        runAsUser: {{ .Values.application.deployment.securityContext.runAsUser }}
+        fsGroup: {{ .Values.deployment.securityContext.fsGroup }}
+        runAsUser: {{ .Values.deployment.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.application.deployment.serviceAccountName }}
-      serviceAccountName: {{ .Values.application.deployment.serviceAccountName }}
+      {{- if .Values.deployment.serviceAccountName }}
+      serviceAccountName: {{ .Values.deployment.serviceAccountName }}
       {{- end }}
       containers:
       - name: "{{ .Chart.Name }}"
-        image: "{{ .Values.application.deployment.image.repository }}:{{ .Values.application.deployment.image.tag }}"
-        {{- if .Values.application.deployment.command }}
-        command: {{ .Values.application.deployment.command }}
+        image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+        {{- if .Values.deployment.command }}
+        command: {{ .Values.deployment.command }}
         {{- end }}
-        imagePullPolicy: {{ .Values.application.deployment.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
         env:
           - name: PORT
-            value: {{ .Values.application.service.targetPort | quote }}
+            value: {{ .Values.service.targetPort | quote }}
           - name: MONGODB_HOST
             value: {{ include "call-nested" (list . "mongodb" "mongodb.fullname") }}
           {{- if and .Values.mongodb.existingSecret (not .Values.mongodb.mongodbUsername) }}
@@ -87,45 +87,45 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: POD_IMAGE
-            value: "{{ .Values.application.deployment.image.repository }}:{{ .Values.application.deployment.image.tag }}"
-        {{- range .Values.application.deployment.envSecrets }}
+            value: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+        {{- range .Values.deployment.envSecrets }}
           - name: {{ .name }}
             valueFrom:
               secretKeyRef:
                 name: {{ .secret.name }}
                 key: {{ .secret.key }}
         {{- end }}
-        {{- range .Values.application.deployment.envConfigMaps }}
+        {{- range .Values.deployment.envConfigMaps }}
           - name: {{ .name }}
             valueFrom:
               configMapKeyRef:
                 name: {{ .configMap.name }}
                 key: {{ .configMap.key }}
         {{- end }}
-        {{- range .Values.application.deployment.env }}
+        {{- range .Values.deployment.env }}
           - name: {{ .name }}
             value: {{ .value | quote }}
         {{- end }}
-        {{- if .Values.application.deployment.resources }}
+        {{- if .Values.deployment.resources }}
         resources:
-{{ toYaml .Values.application.deployment.resources | indent 10 }}
+{{ toYaml .Values.deployment.resources | indent 10 }}
         {{- end }}
         ports:
-        - containerPort: {{ .Values.application.service.targetPort }}
+        - containerPort: {{ .Values.service.targetPort }}
           name: http
-        {{- if .Values.application.deployment.livenessProbe.enabled }}
+        {{- if .Values.deployment.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: {{ .Values.application.deployment.livenessProbe.path }}
+            path: {{ .Values.deployment.livenessProbe.path }}
             port: http
-          initialDelaySeconds: {{ .Values.application.deployment.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.application.deployment.livenessProbe.periodSeconds }}
+          initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
         {{- end }}
-        {{- if .Values.application.deployment.readinessProbe.enabled }}
+        {{- if .Values.deployment.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: {{ .Values.application.deployment.readinessProbe.path }}
+            path: {{ .Values.deployment.readinessProbe.path }}
             port: http
-          initialDelaySeconds: {{ .Values.application.deployment.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.application.deployment.readinessProbe.periodSeconds }}
-          {{- end }}
+          initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+        {{- end }}
