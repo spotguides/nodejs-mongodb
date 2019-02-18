@@ -238,7 +238,7 @@
           "format": "time_series",
           "hide": false,
           "instant": false,
-          "interval": "",
+          "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "{{method}} {{path}} | {{status_code}}",
           "metric": "",
@@ -326,11 +326,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(http_request_duration_ms_count{status_code=~\"^5..$\",image=~\"$image\",name=~\"$name\"}[$__interval])) by (method,path) / sum(increase(http_request_duration_ms_count[$__interval])) by (method,path)",
+          "expr": "sum(increase(http_request_duration_ms_count{status_code=~\"^5..$\",image=~\"$image\",name=~\"$name\"}[$__interval])) by (method,path) / sum(increase(http_request_duration_ms_count{image=~\"$image\",name=~\"$name\"}[$__interval])) by (method,path)",
           "format": "time_series",
           "hide": false,
           "instant": false,
-          "interval": "",
+          "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
