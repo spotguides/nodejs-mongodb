@@ -15,6 +15,7 @@ questions:
     dataType: password
     name: docker-hub
     group: Docker Hub (image repository)
+    description: As part of the CI/CD process a docker image with name <organization>/<repository>:<commit sha> will be built and pushed to Docker Hub (https://hub.docker.com)
     required:
       input: true
       username: true
