@@ -1,5 +1,5 @@
 # Skaffold definition (https://github.com/GoogleContainerTools/skaffold)
-apiVersion: skaffold/v1beta2
+apiVersion: skaffold/v1beta5
 kind: Config
 build:
   # tagPolicy determines how skaffold is going to tag your images.
@@ -27,6 +27,6 @@ deploy:
           - helm-skaffold-values.yaml
         values:
           application.deployment.image: spotguide-nodejs-mongodb
-        # wait: true
+        wait: true
         imageStrategy:
           helm: {}

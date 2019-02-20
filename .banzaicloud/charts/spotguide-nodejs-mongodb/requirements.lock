@@ -8,5 +8,5 @@ dependencies:
 - name: mongodb
   repository: file://../mongodb
   version: 5.1.0
-digest: sha256:40fe6e9d61414c2d60352299afc0e5e968a5da8b672116b13ff6a7ffd7fd479a
-generated: 2019-01-11T17:49:01.875413+01:00
+digest: sha256:ccebdc3a6272b7e4c71119791483b3e5c75d6649598a50f74210979b598df065
+generated: 2019-02-20T09:57:06.338341+01:00
