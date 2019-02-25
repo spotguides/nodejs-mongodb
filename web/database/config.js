@@ -10,8 +10,8 @@ const envVarsSchema = joi
       .default(
         // prettier-ignore
         ({
-          MONGODB_USERNAME = '', MONGODB_PASSWORD = '', MONGODB_HOST = '127.0.0.1', MONGODB_PORT = 27017, MONGODB_DATABASE = '',
-        }) => `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}`,
+          MONGODB_USERNAME = '', MONGODB_PASSWORD = '', MONGODB_HOST = '127.0.0.1', MONGODB_PORT = 27017, MONGODB_DATABASE = '', MONGODB_AUTH_SOURCE = ''
+        }) => `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}${MONGODB_AUTH_SOURCE ? `?authSource=${MONGODB_AUTH_SOURCE}` : ''}`,
         'construct URI from other environment variables'
       ),
     MONGODB_HOST: joi
@@ -25,6 +25,7 @@ const envVarsSchema = joi
     MONGODB_USERNAME: joi.string().allow(''),
     MONGODB_PASSWORD: joi.string().allow(''),
     MONGODB_DATABASE: joi.string().allow(''),
+    MONGODB_AUTH_SOURCE: joi.string().allow(''),
   })
   .unknown()
   .required()

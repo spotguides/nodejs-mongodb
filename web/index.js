@@ -2,10 +2,20 @@
 
 const http = require('http')
 const { promisify } = require('util')
-const { catchErrors, gracefulShutdown } = require('@banzaicloud/service-tools')
+const { catchErrors, gracefulShutdown, logger } = require('@banzaicloud/service-tools')
 const stoppable = require('stoppable')
+const tracing = require('@opencensus/nodejs')
+const { JaegerTraceExporter } = require('@opencensus/exporter-jaeger')
+const config = require('./config')
+
+// Start tracer
+if (!config.tracing.disabled) {
+  const exporter = new JaegerTraceExporter(config.jaeger)
+
+  tracing.registerExporter(exporter).start({ logger, samplingRate: config.tracing.samplingRate })
+}
+
 const app = require('./app')
-const cfg = require('./config')
 const db = require('./database')
 
 // use `stoppable` to stop accepting new connections and closes existing,
@@ -24,7 +34,7 @@ server.once('error', (err) => {
   process.exit(1)
 })
 
-server.listen(cfg.port)
+server.listen(config.port)
 
 // catch all uncaught exceptions and unhandled promise rejections and exit application
 catchErrors([server.shutdown, db.shutdown])

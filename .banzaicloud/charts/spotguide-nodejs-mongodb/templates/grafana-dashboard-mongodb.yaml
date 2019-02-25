@@ -13,4 +13,4 @@ metadata:
     pipeline_grafana_dashboard: "1"
 data:
   mongodb.json: |-2
-{{ .Files.Get "grafana-dashboards/mongodb.json"| indent 4 }}
+    {{ .Files.Get "grafana-dashboards/mongodb.json"| nindent 4 }}

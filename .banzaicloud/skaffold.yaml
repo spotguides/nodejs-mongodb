@@ -26,7 +26,7 @@ deploy:
         valuesFiles:
           - helm-skaffold-values.yaml
         values:
-          application.deployment.image: spotguide-nodejs-mongodb
+          deployment.image: spotguide-nodejs-mongodb
         wait: true
         imageStrategy:
           helm: {}

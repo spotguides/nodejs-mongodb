@@ -1,6 +1,8 @@
 'use strict'
 
 const mongoose = require('mongoose')
+const tracing = require('@opencensus/nodejs')
+const { SpanKind, CanonicalCode } = require('@opencensus/core')
 require('../database')
 
 const userSchema = new mongoose.Schema({
@@ -25,23 +27,73 @@ const UserModel = mongoose.model('users', userSchema)
 
 const User = {
   async getAll() {
-    return UserModel.find({})
+    const span = tracing.tracer.startChildSpan('User.getAll', SpanKind.SERVER)
+
+    try {
+      return await UserModel.find({})
+    } catch (err) {
+      span.setStatus(CanonicalCode.INTERNAL, err.message)
+      return null
+    } finally {
+      span.end()
+    }
   },
 
   async getOne(id) {
-    return UserModel.findById(id)
+    const span = tracing.tracer.startChildSpan('User.getOne', SpanKind.SERVER)
+    span.addAttribute('id', id)
+
+    try {
+      return await UserModel.findById(id)
+    } catch (err) {
+      span.setStatus(CanonicalCode.INTERNAL, err.message)
+      return null
+    } finally {
+      span.end()
+    }
   },
 
   async create(user) {
-    return new UserModel(user).save()
+    const span = tracing.tracer.startChildSpan('User.create', SpanKind.SERVER)
+    span.addAttribute('user', JSON.stringify(user))
+
+    try {
+      return await new UserModel(user).save()
+    } catch (err) {
+      span.setStatus(CanonicalCode.INTERNAL, err.message)
+      return null
+    } finally {
+      span.end()
+    }
   },
 
   async edit(id, user) {
-    return UserModel.findByIdAndUpdate(id, user)
+    const span = tracing.tracer.startChildSpan('User.edit', SpanKind.SERVER)
+    span.addAttribute('id', id)
+    span.addAttribute('user', JSON.stringify(user))
+
+    try {
+      return await UserModel.findByIdAndUpdate(id, user)
+    } catch (err) {
+      span.setStatus(CanonicalCode.INTERNAL, err.message)
+      return null
+    } finally {
+      span.end()
+    }
   },
 
   async delete(id) {
-    return UserModel.findByIdAndRemove(id)
+    const span = tracing.tracer.startChildSpan('User.delete', SpanKind.SERVER)
+    span.addAttribute('id', id)
+
+    try {
+      return await UserModel.findByIdAndRemove(id)
+    } catch (err) {
+      span.setStatus(CanonicalCode.INTERNAL, err.message)
+      return null
+    } finally {
+      span.end()
+    }
   },
 }
 

@@ -12,5 +12,5 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     pipeline_grafana_dashboard: "1"
 data:
-  application.json: |-2
-{{ .Files.Get "grafana-dashboards/application.json"| indent 4 }}
+  application.json: |2-
+    {{ .Files.Get "grafana-dashboards/application.json"| nindent 4 }}

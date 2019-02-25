@@ -10,5 +10,5 @@ metadata:
   name: {{ template "mongodb.fullname" . }}
 data:
   mongodb.conf: |-
-{{ toYaml .Values.configmap | indent 4 }}
+    {{ toYaml .Values.configmap | nindent 4 }}
 {{- end }}

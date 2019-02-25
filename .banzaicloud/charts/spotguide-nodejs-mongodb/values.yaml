@@ -10,10 +10,13 @@ banzaicloud:
     distribution:
     location:
 
-monitor:
+pipeline-monitor:
   enabled: false
 
-ingress:
+pipeline-ingress:
+  enabled: false
+
+istio:
   enabled: false
 
 mongodb:
@@ -26,6 +29,7 @@ deployment:
     repository: banzaicloud/spotguide-nodejs-mongodb
     tag: latest
     pullPolicy: Always
+  args: ["node", ".", "--max-old-space-size", "$(MEMORY_LIMIT)"]
   replicaCount: 1
   maxUnavailable: 0
   maxSurge: 1
@@ -59,6 +63,11 @@ deployment:
   env: []
   envSecrets: []
   envConfigMaps: []
+  envResourceField:
+    - name: MEMORY_LIMIT
+      resourceFieldRef:
+        resource: limits.memory
+        divisor: 1Mi
 service:
   type: ClusterIP
   port: 80

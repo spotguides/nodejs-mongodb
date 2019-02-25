@@ -49,6 +49,7 @@ CURRENT   NAME                 CLUSTER                      AUTHINFO            
 *         docker-for-desktop   docker-for-desktop-cluster   docker-for-desktop
 # build the Docker image and deploy via helm
 $ cd .banzaicloud
+$ skaffold config set --global local-cluster true
 $ skaffold run
 ```
 
@@ -65,8 +66,9 @@ _Requirements:_
 _Commands:_
 
 ```sh
-npm install
-npm test
+# install dependencies
+$ npm ci
+$ npm test
 ```
 
 Using Docker:
@@ -78,7 +80,7 @@ _Requirements:_
 _Commands:_
 
 ```sh
-docker build . -t spotguide-nodejs-mongodb
+docker build . --build-arg NODE_ENV=test -t spotguide-nodejs-mongodb
 docker run -it --rm -v $(pwd):/home/node/ spotguide-nodejs-mongodb npm test
 ```
 
@@ -97,9 +99,18 @@ _Commands:_
 
 ```sh
 # MongoDB must be running, set environment variables in .env or start dependencies
-# docker-compose up -d
-npm install
-npm run start:dev
+$ cat > .env <<'EOF'
+# Used for local development only, when NODE_ENV=development
+MONGODB_USERNAME=username
+MONGODB_PASSWORD=password
+MONGODB_DATABASE=spotguide-nodejs-mongodb
+MONGODB_AUTH_SOURCE=admin
+TRACING_DISABLED=true
+EOF
+$ docker-compose up -d db
+
+$ npm install
+$ npm run start:dev
 ```
 
 Using Docker and Docker Compose:
@@ -111,12 +122,8 @@ _Requirements:_
 _Commands:_
 
 ```sh
-# start dependencies
-docker-compose up -d
-# build image
-docker build . -t spotguide-nodejs-mongodb
-# start application in development mode
-docker run -it --rm -v $(pwd):/home/node/ spotguide-nodejs-mongodb npm run start:dev
+$ docker-compose up -d
+# open http://127.0.0.1:3000/api/v1
 ```
 
 ### Kubernetes ready Node.js

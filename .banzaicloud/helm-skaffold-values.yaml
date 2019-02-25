@@ -1,4 +1,4 @@
-monitor:
+pipeline-monitor:
   enabled: true
   grafana:
     grafana.ini:
@@ -16,8 +16,8 @@ monitor:
         traefik.ingress.kubernetes.io/redirect-replacement: ""
       path: /
       hosts:
-      - grafana.127.0.0.1.xip.io
-ingress:
+        - grafana.127.0.0.1.xip.io
+pipeline-ingress:
   enabled: true
 mongodb:
   mongodbUsername: user
@@ -29,15 +29,16 @@ mongodb:
     enabled: true
   replicaSet:
     enabled: false
-application:
-  ingress:
-    annotations:
-      kubernetes.io/ingress.class: traefik
-    hosts:
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  hosts:
     - application.127.0.0.1.xip.io
-  deployment:
-    image:
-      pullPolicy: IfNotPresent
-    resources: {}
-    autoscaling:
-      enabled: false
+deployment:
+  image:
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: false
+  env:
+    - name: LOGGER_LEVEL
+      value: debug

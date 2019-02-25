@@ -32,7 +32,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.service.targetPort | quote }}
       {{- if .Values.deployment.podAnnotations }}
-{{ toYaml .Values.deployment.podAnnotations | indent 8 }}
+        {{ toYaml .Values.deployment.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "name" . }}
@@ -50,8 +50,15 @@ spec:
       containers:
       - name: "{{ .Chart.Name }}"
         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
-        {{- if .Values.deployment.command }}
-        command: {{ .Values.deployment.command }}
+        {{- with .Values.deployment.command }}
+        {{- range $key, $val := . }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end}}
+        {{- end }}
+        {{- with .Values.deployment.args }}
+        {{- range $key, $val := . }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end}}
         {{- end }}
         imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
         env:
@@ -92,15 +99,19 @@ spec:
           - name: {{ .name }}
             valueFrom:
               secretKeyRef:
-                name: {{ .secret.name }}
-                key: {{ .secret.key }}
+                {{ toYaml .secretKeyRef | nindent 16 }}
         {{- end }}
         {{- range .Values.deployment.envConfigMaps }}
           - name: {{ .name }}
             valueFrom:
               configMapKeyRef:
-                name: {{ .configMap.name }}
-                key: {{ .configMap.key }}
+                {{ toYaml .configMapKeyRef | nindent 16 }}
+        {{- end }}
+        {{- range .Values.deployment.envResourceField }}
+          - name: {{ .name }}
+            valueFrom:
+              resourceFieldRef:
+                {{ toYaml .resourceFieldRef | nindent 16 }}
         {{- end }}
         {{- range .Values.deployment.env }}
           - name: {{ .name }}
@@ -108,7 +119,7 @@ spec:
         {{- end }}
         {{- if .Values.deployment.resources }}
         resources:
-{{ toYaml .Values.deployment.resources | indent 10 }}
+          {{ toYaml .Values.deployment.resources | nindent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.targetPort }}
