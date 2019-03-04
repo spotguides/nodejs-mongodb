@@ -24,9 +24,31 @@ jobs:
           root: ~/repo
           paths:
             - .
+  build_and_deploy:
+    docker:
+      - image: circleci/golang
+      - image: fresh8/circle-skaffold-helm
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-pkg-cache
+      - run: |
+          go get -u sigs.k8s.io/kind
+          kind create cluster
+          export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
+          cd .banzaicloud
+          skaffold config set --global local-cluster true
+          skaffold run
+      - save_cache:
+          key: v1-pkg-cache
+          paths:
+            - '/go/pkg'
 
 workflows:
   version: 2
   test:
     jobs:
       - test
+      - build_and_deploy
