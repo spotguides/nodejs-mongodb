@@ -1,10 +1,10 @@
 pipeline:
   create_cluster:
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.10.2
     action: EnsureCluster
 
   test:
-    image: node:10-slim
+    image: node:11-slim
     commands:
       - npm ci
       - npm test
@@ -12,8 +12,8 @@ pipeline:
   build_image:
     image: plugins/docker
     dockerfile: Dockerfile
-    repo: '{{ .CICD_REPO }}'
-    tags: '{{ trunc 7 .CICD_COMMIT_SHA }}'
+    repo: "{{ lower .CICD_REPO }}"
+    tags: "{{ trunc 7 .CICD_COMMIT_SHA }}"
     secretFrom:
       DOCKER_USERNAME:
         # name:
@@ -36,11 +36,11 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.10.2
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
-      name: '{{ .CICD_REPO_NAME }}-mongodb'
+      name: "{{ kebabCase .CICD_REPO_NAME }}-mongodb"
       namespace: default
       merge: true
       spec:
@@ -53,11 +53,11 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.10.2
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
-      name: '{{ .CICD_REPO_NAME }}-mongodb'
+      name: "{{ kebabCase .CICD_REPO_NAME }}-mongodb"
       namespace: default
       merge: true
       spec:
@@ -68,11 +68,11 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.10.2
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
-      name: '{{ .CICD_REPO_NAME }}-mongodb'
+      name: "{{ kebabCase .CICD_REPO_NAME }}-mongodb"
       namespace: default
       merge: true
       spec:
@@ -83,19 +83,19 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.10.2
     action: EnsureDeployment
     deployment:
-      name: './spotguide-nodejs-mongodb-1.0.0.tgz'
+      name: "./spotguide-nodejs-mongodb-1.0.0.tgz"
       reuseValues: true
-      releaseName: '{{ .CICD_REPO_NAME }}'
+      releaseName: "{{ kebabCase .CICD_REPO_NAME }}"
       wait: true
       timeout: 900
       values:
         deployment:
           image:
-            repository: '{{ .CICD_REPO }}'
-            tag: '{{ trunc 7 .CICD_COMMIT_SHA }}'
+            repository: "{{ lower .CICD_REPO }}"
+            tag: "{{ trunc 7 .CICD_COMMIT_SHA }}"
             pullPolicy: Always
         ingress:
           annotations:
@@ -104,10 +104,10 @@ pipeline:
             traefik.ingress.kubernetes.io/redirect-replacement: https://$1
             traefik.ingress.kubernetes.io/redirect-permanent: "true"
           hosts:
-            - 'app-{{.CICD_REPO_NAME}}.{{.CLUSTER_NAME}}.{{.ORG_NAME}}.{{.DOMAIN_NAME}}'
+            - "app-{{ kebabCase .CICD_REPO_NAME }}.{{ kebabCase .CLUSTER_NAME }}.{{ kebabCase .ORG_NAME }}.{{ .DOMAIN_NAME }}"
         mongodb:
           metrics:
             enabled: true
           usePassword: true
-          existingSecret: '{{ .CICD_REPO_NAME }}-mongodb'
+          existingSecret: "{{ kebabCase .CICD_REPO_NAME }}-mongodb"
           # mongodbDatabase:
