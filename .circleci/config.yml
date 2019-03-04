@@ -38,6 +38,7 @@ jobs:
           kind create cluster
 
           export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
+          kubectl cluster-info
           cd .banzaicloud
           helm init --wait
           skaffold config set --global local-cluster true
