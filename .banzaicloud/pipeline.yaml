@@ -1,6 +1,6 @@
 pipeline:
   create_cluster:
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.11
     action: EnsureCluster
 
   test:
@@ -36,7 +36,7 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.11
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
@@ -53,7 +53,7 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.11
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
@@ -68,7 +68,7 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.11
     action: InstallSecret
     clusterSecret:
       # sourceSecretName:
@@ -83,7 +83,7 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: banzaicloud/ci-pipeline-client:0.10.1
+    image: banzaicloud/ci-pipeline-client:0.11
     action: EnsureDeployment
     deployment:
       name: './spotguide-nodejs-mongodb-1.0.0.tgz'
