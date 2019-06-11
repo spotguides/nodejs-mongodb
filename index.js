@@ -22,9 +22,7 @@ try {
 
 if (nodeVersionRequirement && !semver.satisfies(process.version, nodeVersionRequirement)) {
   throw new Error(
-    `Node.js runtime version not satisfied (required: ${nodeVersionRequirement}, current: ${
-      process.version
-    }), run \`nvm install ${nodeVersionRequirement}\` or see https://nodejs.org/`
+    `Node.js runtime version not satisfied (required: ${nodeVersionRequirement}, current: ${process.version}), run \`nvm install ${nodeVersionRequirement}\` or see https://nodejs.org/`
   )
 }
 
