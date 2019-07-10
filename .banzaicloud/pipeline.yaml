@@ -29,7 +29,7 @@ pipeline:
     image: lachlanevenson/k8s-helm:latest
     commands:
       - helm init -c
-      - helm repo add banzaicloud-stable http://kubernetes-charts.banzaicloud.com/branch/master
+      - helm repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
       - helm package ./.banzaicloud/charts/spotguide-nodejs-mongodb
 
   install_mongodb_user_secret:
@@ -104,7 +104,7 @@ pipeline:
             traefik.ingress.kubernetes.io/redirect-replacement: https://$1
             traefik.ingress.kubernetes.io/redirect-permanent: "true"
           hosts:
-            - 'app-{{.CICD_REPO_NAME}}.{{.CLUSTER_NAME}}.{{.ORG_NAME}}.{{.DOMAIN_NAME}}'
+            - '{{ lower (printf "app-%s-%s.%s.%s" .CICD_REPO_NAME (.CLUSTER_NAME | sha1sum | trunc 10) .ORG_NAME .DOMAIN_NAME) }}'
         mongodb:
           metrics:
             enabled: true

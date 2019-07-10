@@ -1,4 +1,4 @@
-ARG NODE_VERSION=11
+ARG NODE_VERSION=12
 
 ###
 # 1. Dependencies
