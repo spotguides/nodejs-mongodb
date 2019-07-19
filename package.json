@@ -13,7 +13,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@banzaicloud/service-tools": "2.0.8",
+    "@banzaicloud/service-tools": "2.0.9",
     "@opencensus/core": "0.0.15",
     "@opencensus/exporter-jaeger": "0.0.15",
     "@opencensus/nodejs": "0.0.15",
@@ -23,7 +23,7 @@
     "koa-bodyparser": "4.2.1",
     "koa-compose": "4.1.0",
     "koa-router": "7.4.0",
-    "mongoose": "5.6.4",
+    "mongoose": "5.6.5",
     "prom-client": "11.5.3",
     "semver": "6.2.0",
     "stoppable": "1.1.0"
@@ -33,9 +33,9 @@
     "eslint": "6.0.1",
     "eslint-config-airbnb-base": "13.2.0",
     "eslint-config-prettier": "6.0.0",
-    "eslint-plugin-import": "2.18.0",
+    "eslint-plugin-import": "2.18.1",
     "eslint-plugin-prettier": "3.1.0",
-    "husky": "3.0.0",
+    "husky": "3.0.1",
     "jest": "24.8.0",
     "nodemon": "1.19.1",
     "pino-pretty": "3.2.0",
