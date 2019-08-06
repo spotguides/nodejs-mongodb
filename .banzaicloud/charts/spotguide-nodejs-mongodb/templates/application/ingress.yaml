@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-application
+  name: {{ template "fullname" . }}
   annotations:
     {{ toYaml .Values.ingress.annotations | nindent 4 }}
   labels:
