@@ -4,11 +4,16 @@ ARG NODE_VERSION=12
 # 1. Dependencies
 ###
 
-FROM node:${NODE_VERSION}-slim as dependencies
+FROM node:${NODE_VERSION}-alpine as dependencies
 WORKDIR /home/node/
 
-RUN apt-get update
-RUN apt-get install -y build-essential python
+RUN apk update && \
+  apk add --virtual build-dependencies \
+  build-base \
+  gcc \
+  wget \
+  git \
+  python
 RUN npm install --global npm node-gyp
 
 COPY package.json *package-lock.json *.npmrc ./
@@ -21,7 +26,7 @@ RUN npm ci
 # 2. Application
 ###
 
-FROM node:${NODE_VERSION}-slim
+FROM node:${NODE_VERSION}-alpine
 WORKDIR /home/node/
 
 COPY --from=dependencies /home/node/node_modules node_modules
