@@ -88,11 +88,10 @@ pipeline:
     deployment:
       name: './spotguide-nodejs-mongodb-1.0.0.tgz'
       reuseValues: true
-      releaseName: '{{ .CICD_REPO_NAME }}'
+      releaseName: spotguide-nodejs-mongodb
       wait: true
       timeout: 900
       values:
-        fullNameOverride: spotguide-nodejs
         deployment:
           image:
             repository: '{{ .CICD_REPO }}'
