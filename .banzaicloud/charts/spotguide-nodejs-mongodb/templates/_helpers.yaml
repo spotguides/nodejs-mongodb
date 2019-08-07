@@ -23,7 +23,7 @@
 {{- end -}}
 
 {{- define "fullname-mongodb" -}}
-{{- printf "%s-%s" (include "fullname" .) "application" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" (include "fullname" .) "mongodb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 # https://github.com/helm/helm/issues/4535
