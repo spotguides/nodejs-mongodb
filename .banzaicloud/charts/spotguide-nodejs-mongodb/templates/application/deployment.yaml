@@ -37,6 +37,8 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        # NOTE: for Pipeline, should be removed once the new standard labels are queried as well
+        release: {{ .Release.Name }}
         app.kubernetes.io/component: application
     spec:
       {{- if .Values.deployment.securityContext.enabled }}
