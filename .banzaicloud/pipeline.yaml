@@ -10,7 +10,7 @@ pipeline:
       - npm test
 
   build_image:
-    image: plugins/docker
+    image: banzaicloud/kaniko-plugin
     dockerfile: Dockerfile
     repo: '{{ .CICD_REPO }}'
     tags: '{{ trunc 7 .CICD_COMMIT_SHA }}'
