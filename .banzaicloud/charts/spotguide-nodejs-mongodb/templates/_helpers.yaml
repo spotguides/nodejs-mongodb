@@ -18,6 +18,14 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "fullname-application" -}}
+{{- printf "%s-%s" (include "fullname" .) "application" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "fullname-mongodb" -}}
+{{- printf "%s-%s" (include "fullname" .) "application" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 # https://github.com/helm/helm/issues/4535
 {{- define "call-nested" }}
 {{- $dot := index . 0 }}

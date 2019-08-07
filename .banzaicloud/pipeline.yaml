@@ -92,6 +92,7 @@ pipeline:
       wait: true
       timeout: 900
       values:
+        fullNameOverride: spotguide-nodejs
         deployment:
           image:
             repository: '{{ .CICD_REPO }}'
@@ -104,7 +105,11 @@ pipeline:
             traefik.ingress.kubernetes.io/redirect-replacement: https://$1
             traefik.ingress.kubernetes.io/redirect-permanent: "true"
           hosts:
+          {{{{- if .platform.AutoDNSEnabled }}}}
             - '{{ lower (printf "app-%s-%s.%s.%s" .CICD_REPO_NAME (.CLUSTER_NAME | sha1sum | trunc 10) .ORG_NAME .DOMAIN_NAME) }}'
+          {{{{- else }}}}
+            - '/'
+          {{{{- end }}}}
         mongodb:
           metrics:
             enabled: true
