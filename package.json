@@ -23,7 +23,7 @@
     "koa-bodyparser": "4.2.1",
     "koa-compose": "4.1.0",
     "koa-router": "7.4.0",
-    "mongoose": "5.6.8",
+    "mongoose": "5.7.5",
     "prom-client": "11.5.3",
     "semver": "6.3.0",
     "stoppable": "1.1.0"
