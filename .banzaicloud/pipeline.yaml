@@ -26,8 +26,9 @@ pipeline:
     when:
       branch:
         include: [master]
-    image: alpine/helm:3.0.0
+    image: lachlanevenson/k8s-helm:v2.16.1
     commands:
+      - helm init -c
       - helm repo add stable https://kubernetes-charts.storage.googleapis.com
       - helm repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
       - helm package ./.banzaicloud/charts/spotguide-nodejs-mongodb
