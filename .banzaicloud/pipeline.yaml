@@ -95,7 +95,7 @@ pipeline:
       values:
         deployment:
           image:
-            repository: '{{ .CICD_REPO }}'
+            repository: '{{ .CICD_REPO_NAME }}'
             tag: '{{ trunc 7 .CICD_COMMIT_SHA }}'
             pullPolicy: Always
         ingress:
