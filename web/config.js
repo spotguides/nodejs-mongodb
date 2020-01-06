@@ -1,6 +1,4 @@
-'use strict'
-
-const joi = require('joi')
+const joi = require('@hapi/joi')
 
 const envVarsSchema = joi
   .object({
@@ -37,7 +35,7 @@ const envVarsSchema = joi
   .unknown()
   .required()
 
-const { value: envVars, error } = joi.validate(process.env, envVarsSchema, {
+const { value: envVars, error } = envVarsSchema.validate(process.env, {
   abortEarly: false,
 })
 if (error) {

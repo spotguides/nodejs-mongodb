@@ -1,5 +1,3 @@
-'use strict'
-
 const Prometheus = require('prom-client')
 
 const httpRequestDurationMicroseconds = new Prometheus.Histogram({

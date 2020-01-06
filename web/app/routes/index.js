@@ -1,5 +1,3 @@
-'use strict'
-
 const Router = require('koa-router')
 const compose = require('koa-compose')
 const { middleware } = require('@banzaicloud/service-tools')

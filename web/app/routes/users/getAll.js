@@ -1,5 +1,3 @@
-'use strict'
-
 const User = require('../../../models/User')
 
 async function getAllHandler(ctx) {

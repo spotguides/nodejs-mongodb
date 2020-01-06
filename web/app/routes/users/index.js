@@ -1,5 +1,3 @@
-'use strict'
-
 const create = require('./create')
 const del = require('./delete')
 const edit = require('./edit')

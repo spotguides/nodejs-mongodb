@@ -1,5 +1,3 @@
-'use strict'
-
 const { middleware } = require('@banzaicloud/service-tools')
 const db = require('../../../database')
 

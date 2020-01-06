@@ -1,5 +1,3 @@
-'use strict'
-
 const { middleware } = require('@banzaicloud/service-tools')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')

@@ -1,10 +1,8 @@
-'use strict'
-
 const http = require('http')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const { ObjectId } = require('bson')
-const { makeRequest } = require('@banzaicloud/service-tools/dist/helper')
+const { makeRequest } = require('@banzaicloud/service-tools/dist/src/helper')
 const User = require('../../../models/User')
 const { create: handler } = require('./')
 
@@ -36,10 +34,10 @@ describe('Route handlers', () => {
 
   describe('Create user', () => {
     it('should respond with 201 when the user is created', async () => {
-      User.create.mockImplementationOnce(() => Promise.resolve(Object.assign({ id }, user)))
+      User.create.mockImplementationOnce(() => Promise.resolve({ id, ...user }))
       const response = await makeRequest(server, { method: 'POST', body: user })
       expect(response.statusCode).toEqual(201)
-      expect(response.body).toEqual(Object.assign({ id }, user))
+      expect(response.body).toEqual({ id, ...user })
       expect(User.create).toHaveBeenCalledWith(user)
     })
 

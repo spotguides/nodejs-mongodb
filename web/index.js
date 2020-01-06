@@ -1,5 +1,3 @@
-'use strict'
-
 const http = require('http')
 const { promisify } = require('util')
 const { catchErrors, gracefulShutdown, logger } = require('@banzaicloud/service-tools')

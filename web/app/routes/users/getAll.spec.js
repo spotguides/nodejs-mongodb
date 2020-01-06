@@ -1,8 +1,6 @@
-'use strict'
-
 const http = require('http')
 const Koa = require('koa')
-const { makeRequest } = require('@banzaicloud/service-tools/dist/helper')
+const { makeRequest } = require('@banzaicloud/service-tools/dist/src/helper')
 const User = require('../../../models/User')
 const { getAll: handler } = require('./')
 

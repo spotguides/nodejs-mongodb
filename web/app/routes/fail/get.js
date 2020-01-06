@@ -1,6 +1,4 @@
-'use strict'
-
-const joi = require('joi')
+const joi = require('@hapi/joi')
 const compose = require('koa-compose')
 const { middleware } = require('@banzaicloud/service-tools')
 

@@ -1,5 +1,3 @@
-'use strict'
-
 const mongoose = require('mongoose')
 const tracing = require('@opencensus/nodejs')
 const { SpanKind, CanonicalCode } = require('@opencensus/core')

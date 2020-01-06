@@ -1,6 +1,4 @@
-'use strict'
-
-const joi = require('joi')
+const joi = require('@hapi/joi')
 const compose = require('koa-compose')
 const { middleware } = require('@banzaicloud/service-tools')
 
@@ -11,7 +9,7 @@ const schemaValidator = middleware.koa.requestValidator({
         .number()
         .integer()
         .unit('ms')
-        .default(() => Math.floor(Math.random() * 10000), 'Random delay between 0-10000'),
+        .default(() => Math.floor(Math.random() * 10000)),
     })
     .required(),
 })

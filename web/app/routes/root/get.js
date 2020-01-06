@@ -1,5 +1,3 @@
-'use strict'
-
 const config = require('../../config')
 
 async function get(ctx) {
