@@ -9,8 +9,7 @@ const envVarsSchema = joi
         // prettier-ignore
         ({
           MONGODB_USERNAME = '', MONGODB_PASSWORD = '', MONGODB_HOST = '127.0.0.1', MONGODB_PORT = 27017, MONGODB_DATABASE = '', MONGODB_AUTH_SOURCE = ''
-        }) => `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}${MONGODB_AUTH_SOURCE ? `?authSource=${MONGODB_AUTH_SOURCE}` : ''}`,
-        'construct URI from other environment variables'
+        }) => `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}${MONGODB_AUTH_SOURCE ? `?authSource=${MONGODB_AUTH_SOURCE}` : ''}`
       ),
     MONGODB_HOST: joi
       .string()
