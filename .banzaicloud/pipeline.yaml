@@ -89,13 +89,13 @@ pipeline:
     deployment:
       name: './spotguide-nodejs-mongodb-1.0.0.tgz'
       reuseValues: true
-      releaseName: '{{ .CICD_REPO }}'
+      releaseName: '{{ .CICD_REPO_NAME }}'
       wait: true
       timeout: 900
       values:
         deployment:
           image:
-            repository: '{{ .CICD_REPO_NAME }}'
+            repository: '{{ .CICD_REPO }}'
             tag: '{{ trunc 7 .CICD_COMMIT_SHA }}'
             pullPolicy: Always
         ingress:
