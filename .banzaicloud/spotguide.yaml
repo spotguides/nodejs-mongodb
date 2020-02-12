@@ -1,7 +1,7 @@
 apiVersion: v1
-name: 'Node.js with MongoDB database'
-description: 'Spotguide for Node.js applications with MongoDB database'
-tags: ['Node.js', 'MongoDB', 'application']
+name: "Node.js with MongoDB database"
+description: "Spotguide for Node.js applications with MongoDB database"
+tags: ["Node.js", "MongoDB", "application"]
 resources:
   sumCpu: 3
   sumMem: 4
@@ -11,6 +11,17 @@ resources:
   minNodes: 2
   maxNodes: 4
 questions:
+  - type: pipeline
+    dataType: string
+    label: namespace
+    group: Deployment
+    required: true
+    default: default
+    targets:
+      - install_mongodb_user_secret.clusterSecret.namespace
+      - install_mongodb_root_secret.clusterSecret.namespace
+      - install_mongodb_replica_set_key_secret.clusterSecret.namespace
+      - deploy_application.deployment.namespace
   - type: secret
     dataType: password
     name: docker-hub
@@ -25,6 +36,17 @@ questions:
     targets:
       - build_image.secretFrom.DOCKER_USERNAME.name
       - build_image.secretFrom.DOCKER_PASSWORD.name
+  - type: pipeline
+    dataType: string
+    label: repository name
+    group: Docker Hub (image repository)
+    required: true
+    description: Defaults to repository name
+    default: "{{ .CICD_REPO }}"
+    order: 2
+    targets:
+      - deploy_application.deployment.values.deployment.image.repository
+      - build_image.repo
   - type: secret
     dataType: password
     name: mongodb

@@ -88,6 +88,7 @@ pipeline:
     action: EnsureDeployment
     deployment:
       name: './spotguide-nodejs-mongodb-1.0.0.tgz'
+      namespace: default
       reuseValues: true
       releaseName: '{{ .CICD_REPO_NAME }}'
       wait: true
